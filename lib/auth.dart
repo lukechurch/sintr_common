@@ -23,29 +23,29 @@ Future<AuthClient> getAuthedClient() async {
 
   client = await _tryAuthViaMetadata();
   if (client != null) {
-    _log.finer("OK: Client acquired from metadata server");
+    print("OK: Client acquired from metadata server");
     return new Future.value(client);
   }
 
   client = await _tryAuthViaCryptoToken();
   if (client != null) {
-    _log.finer("OK: Client acquired from crypto token");
+    print("OK: Client acquired from crypto token");
     return new Future.value(client);
   }
 
-  _log.shout("FAIL: Unable to get client");
+  print("FAIL: Unable to get client");
   throw "Unable to get client";
 }
 
 Future<AuthClient> _tryAuthViaMetadata() async {
   AuthClient client;
   try {
-    _log.finer("PRE: About to get client from Metadata server");
+    print("PRE: About to get client from Metadata server");
     client = await clientViaMetadataServer();
   } catch (e, st) {
-    _log.finer("NOK: Metadata server query for client failed");
-    _log.finest(e);
-    _log.finest(st);
+    print("NOK: Metadata server query for client failed");
+    print(e);
+    print(st);
     return null;
   }
   return client;
@@ -61,10 +61,10 @@ Future<AuthClient> _tryAuthViaCryptoToken() async {
       ..addAll(Storage.SCOPES)
       ..addAll(PubSub.SCOPES);
 
-    _log.finer("PRE: About to get client from Crypto Token");
+    print("PRE: About to get client from Crypto Token");
     if (config.configuration == null ||
         config.configuration.cryptoTokensLocation == null) {
-      _log.finer("NOK: No crypto token configuration");
+      print("NOK: No crypto token configuration");
       return null;
     }
 
@@ -72,7 +72,7 @@ Future<AuthClient> _tryAuthViaCryptoToken() async {
         "${config.configuration.projectName}.json";
 
     if (!(new File(cryptoPath).existsSync())) {
-      _log.finer("NOK: No cryptoToken at $cryptoPath");
+      print("NOK: No cryptoToken at $cryptoPath");
       return null;
     }
 
@@ -80,9 +80,9 @@ Future<AuthClient> _tryAuthViaCryptoToken() async {
     var credentials = new ServiceAccountCredentials.fromJson(jsonCredentials);
     client = await clientViaServiceAccount(credentials, scopes);
   } catch (e, st) {
-    _log.finer("NOK: Crypto token from token failed");
-    _log.finest(e);
-    _log.finest(st);
+    print("NOK: Crypto token from token failed");
+    print(e);
+    print(st);
   }
 
   return client;
