@@ -3,10 +3,20 @@
 // BSD-style license that can be found in the LICENSE file.
 
 import 'package:logging/logging.dart' as logging;
-export 'package:logging/logging.dart' show Logger;
+
+logging.Logger _logger;
+
+info(String message) => _logger.info(message);
+trace(String message) => _logger.finer(message);
+debug(String message) => _logger.fine(message);
+alert(String message) => _logger.shout(message);
+
+perf(String name, int ms) => _logger.fine("PERF: $name : $ms");
 
 /// Setup log streaming to the right place for local and remote deployment.
-setupLogging() {
+setupLogging([String loggerName = "sintr_common"]) {
+  _logger = new logging.Logger(loggerName);
+
   // TODO(lukechurch): Add support for container logs
   _setupLocalLogging();
 }
@@ -17,7 +27,6 @@ _setupLocalLogging() {
   logging.hierarchicalLoggingEnabled = false;
   logging.Logger.root.level = logging.Level.ALL;
   logging.Logger.root.onRecord.listen((logging.LogRecord rec) {
-    print('${rec.level.name}: ${rec.time}: ${rec.message}');
+    print('${rec.loggerName}: ${rec.level.name}: ${rec.time}: ${rec.message}');
   });
-
 }

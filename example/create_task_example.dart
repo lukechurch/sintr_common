@@ -14,7 +14,7 @@ main() async {
   String projectId = "liftoff-dev";
 
   config.configuration = new config.Configuration(projectId,
-      cryptoTokensLocation: "${config.userHomePath}/Communications/CryptoTokens");
+      cryptoTokensLocation: "/Users/lukechurch/Communications/CryptoTokens");
 
   var client = await getAuthedClient();
 
@@ -22,18 +22,18 @@ main() async {
   var datastoreDB = new db.DatastoreDB(datastore);
 
   ss.fork(() async {
-
     db.registerDbService(datastoreDB);
-
     // db.DatastoreDB _db = ae.context.services.db;
 
+    tasks.TaskController taskController = new tasks.TaskController("test_task");
 
-
-    tasks.TaskController taskController =
-        new tasks.TaskController("example_task");
-    taskController.createTasks([
+    taskController.createTasks(
+        [
       new gae_utils.CloudStorageLocation("t1", "o1"),
       new gae_utils.CloudStorageLocation("t2", "o2")
-    ], new gae_utils.CloudStorageLocation("s1", "o3"), "resultsBucket");
+    ],
+        new gae_utils.CloudStorageLocation(
+            "liftoff-dev-source", "test_worker.json"),
+        "liftoff-dev-results");
   });
 }
