@@ -285,7 +285,7 @@ class TaskController {
 
     // TODO: Add co-ordination of the job to outside the control scripts
     var query = _db.query(_TaskModel)
-      ..filter("lifecycleState =", READY_STATE)..limit(10);
+      ..filter("lifecycleState =", READY_STATE)..limit(100);
 
     await for (_TaskModel model in query.run()) {
       model.lifecycleState = ALLOCATED_STATE;
